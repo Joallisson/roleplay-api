@@ -9,12 +9,14 @@ process.env.NODE_ENV = 'testing'
 process.env.ADONIS_ACE_CWD = join(__dirname)
 sourceMapSupport.install({ handleUncaughtExceptions: false })
 
+// eslint-disable-next-line prettier/prettier
 async function  runMigrations() { //Vai rodar as migrations assim que começar os testes
   await execa.node('ace', ['migration:run'], {
     stdio: 'inherit',
   })
 }
 
+// eslint-disable-next-line prettier/prettier
 async function  rollbackMigrations() { //Vai apagar as migrations assim que começar os testes
   await execa.node('ace', ['migration:rollback'], {
     stdio: 'inherit',
