@@ -11,6 +11,8 @@ export default class Users extends BaseSchema {
       table.string('password').notNullable().unique() //Não pode estar vazia //Tem que ser um valor único
       table.string('avatar').defaultTo('') //Por padrão o avatar vai estar vazio
 
+
+      //Verificar
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })
