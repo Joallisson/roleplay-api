@@ -1,3 +1,3 @@
 # roleplay-api
-Primeiro projeto com Adonis, TypeScript e TDD 
+Primeiro projeto com Adonis, TypeScript e TDD.
  
