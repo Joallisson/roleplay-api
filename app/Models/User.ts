@@ -12,7 +12,7 @@ export default class User extends BaseModel {
   @column()
   public email: string
 
-  @column({ serializeAs: null })
+  @column({ serializeAs: null }) //Não deixa o modelo retornar a senha
   public password: string
 
   @column()

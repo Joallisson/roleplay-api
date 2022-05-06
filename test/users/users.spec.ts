@@ -29,7 +29,7 @@ test.group('User', () => {
     assert.exists(body.user.id, 'Id undefined')
     assert.equal(body.user.email, userPayload.email)
     assert.equal(body.user.username, userPayload.username)
-    assert.equal(body.user.password, userPayload.password)
     assert.equal(body.user.avatar, userPayload.avatar)
+    assert.notExists(body.user.password, 'Password defined')
   })
 })
