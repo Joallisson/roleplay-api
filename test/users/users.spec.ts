@@ -35,9 +35,9 @@ test.group('User', (group) => {
     assert.notExists(body.user.password, 'Password defined')
   })
 
-  //=====================================================================================
+//=====================================================================================
 
-  test.only('it should return 409 when email is already in use', async (assert) => {
+  test('it should return 409 when email is already in use', async (assert) => {
     const { email } = await UserFactory.create()
     const { body } = await supertest(BASE_URL).post('/users')
     .send(
@@ -56,6 +56,31 @@ test.group('User', (group) => {
     assert.equal(body.status, 409)
 
   })
+
+//=====================================================================================
+
+  test.only('it should return 409 when username is already in use', async (assert) => {
+    const { username } = await UserFactory.create()
+    const { body } = await supertest(BASE_URL).post('/users')
+    .send(
+      {
+        email: 'teste@teste.com',
+        username,
+        password: 'teste'
+      }
+    )
+    .expect(409)
+
+    assert.exists(body.message)
+    assert.exists(body.code)
+    assert.exists(body.status)
+    assert.include(body.message, 'username')
+    assert.equal(body.code, 'BAD_REQUEST')
+    assert.equal(body.status, 409)
+  })
+
+//=====================================================================================
+
 
   group.beforeEach(async () => { //Antes de executar cada teste, inicia uma transação
     await Database.beginGlobalTransaction()
