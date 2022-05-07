@@ -59,7 +59,7 @@ test.group('User', (group) => {
 
 //=====================================================================================
 
-  test.only('it should return 409 when username is already in use', async (assert) => {
+  test('it should return 409 when username is already in use', async (assert) => {
     const { username } = await UserFactory.create()
     const { body } = await supertest(BASE_URL).post('/users')
     .send(
@@ -81,6 +81,13 @@ test.group('User', (group) => {
 
 //=====================================================================================
 
+test.only('it should return 422 when required data is not provided', async (assert) => {
+  const { body } = await supertest(BASE_URL).post('/users').send({}).expect(422)
+  assert.equal(body.code, 'BAD_REQUEST')
+  assert.equal(body.status, 422)
+})
+
+//=====================================================================================
 
   group.beforeEach(async () => { //Antes de executar cada teste, inicia uma transação
     await Database.beginGlobalTransaction()
