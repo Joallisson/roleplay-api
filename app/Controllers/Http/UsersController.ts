@@ -31,7 +31,19 @@ export default class UsersController {
     return response.created({ user }) //No final das contas o que vai ser criado, vai ser um usuário
   }
 
+
   public async update({request, response}: HttpContextContract){
-    return response.ok({})
+
+    const { email, password, avatar } = await request.only(['email', 'avatar', 'password'])
+    const id = request.param('id')
+    const user = await User.findOrFail(id)
+
+    //Atualizando os dados do bd com os dados da requisição
+    user.email = email
+    user.password = password
+    if(avatar) user.avatar = avatar //Se for passado o avatar na requisição então atualiza ele também
+    await user.save()
+
+    return response.ok({ user })
   }
 }
