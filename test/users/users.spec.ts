@@ -116,6 +116,28 @@ test('it should return 422 when providing an invalid password', async (assert) =
 
 //=====================================================================================
 
+  test.only('it should update an user', async (assert) => {
+    const { id, password } = await UserFactory.create()
+    const email = 'teste@teste.com'
+    const avatar = 'http://imagemdeteste.png'
+
+    const { body } = await supertest(BASE_URL)
+      .put(`/users/${id}`)
+      .send({
+        email,
+        avatar,
+        password
+      })
+      .expect(200)
+
+      assert.exists(body.user, 'User undefined')
+      assert.equal(body.user.email, email)
+      assert.equal(body.user.avatar, avatar)
+      assert.equal(body.user.id, id)
+  })
+
+//=====================================================================================
+
   group.beforeEach(async () => { //Antes de executar cada teste, inicia uma transação
     await Database.beginGlobalTransaction()
   })
