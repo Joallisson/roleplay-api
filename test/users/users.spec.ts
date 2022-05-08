@@ -1,7 +1,8 @@
 import { UserFactory } from './../../database/factories/index';
 import test from 'japa'
-import supertest from 'supertest'
+import supertest from 'supertest' //O supertest é o servidor de teste
 import Database from '@ioc:Adonis/Lucid/Database';
+import Hash from '@ioc:Adonis/Core/Hash'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
@@ -116,12 +117,14 @@ test('it should return 422 when providing an invalid password', async (assert) =
 
 //=====================================================================================
 
-  test.only('it should update an user', async (assert) => {
-    const { id, password } = await UserFactory.create()
+  test('it should update an user', async (assert) => {
+    const { id, password } = await UserFactory.create() //Criando dados com o user factory e recuperanso id e password
+
+    //Dados que eu vou alterar
     const email = 'teste@teste.com'
     const avatar = 'http://imagemdeteste.png'
 
-    const { body } = await supertest(BASE_URL)
+    const { body } = await supertest(BASE_URL) //mandando requisição para o servidor de teste
       .put(`/users/${id}`)
       .send({
         email,
@@ -134,6 +137,33 @@ test('it should return 422 when providing an invalid password', async (assert) =
       assert.equal(body.user.email, email)
       assert.equal(body.user.avatar, avatar)
       assert.equal(body.user.id, id)
+  })
+
+//=====================================================================================
+
+  test.only('it should update the password of hte user', async (assert) => {
+
+    //pegando dados antes de atualizar a senha
+    const user = await UserFactory.create() //Criando dados com o user factory e recuperanso id, email e avatar
+
+    //Dados que eu vou alterar
+    const password = 'teste'
+
+    const { body } = await supertest(BASE_URL) //mandando requisição para o servidor de teste e retornando o body/corpo da resposta
+      .put(`/users/${user.id}`)
+      .send({
+        email: user.email,
+        avatar: user.avatar,
+        password
+      })
+      .expect(200)
+
+      await user.refresh() //Atualizando dados do user depois que atualiza a senha
+
+      assert.exists(body.user, 'User undefined')
+      assert.equal(body.user.id, user.id)
+      assert.isTrue(await Hash.verify(user.password, password)) //Verificando se a senha que foi passada na requisição para atualizar no bd é igual a senha que tá atualmente no bd
+
   })
 
 //=====================================================================================
