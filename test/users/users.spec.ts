@@ -141,7 +141,7 @@ test('it should return 422 when providing an invalid password', async (assert) =
 
 //=====================================================================================
 
-  test.only('it should update the password of hte user', async (assert) => {
+  test('it should update the password of hte user', async (assert) => {
 
     //pegando dados antes de atualizar a senha
     const user = await UserFactory.create() //Criando dados com o user factory e recuperanso id, email e avatar
@@ -163,6 +163,34 @@ test('it should return 422 when providing an invalid password', async (assert) =
       assert.exists(body.user, 'User undefined')
       assert.equal(body.user.id, user.id)
       assert.isTrue(await Hash.verify(user.password, password)) //Verificando se a senha que foi passada na requisição para atualizar no bd é igual a senha que tá atualmente no bd
+
+  })
+
+//=====================================================================================
+
+  test.only('it should return 422 when required data is not provided', async (assert) => {
+    const { id } = await UserFactory.create()
+    const { body } = await supertest(BASE_URL).put(`/users/${id}`).send({}).expect(422)
+
+    assert.equal(body.code, 'BAD_REQUEST')
+    assert.equal(body.status, 422)
+  })
+
+//=====================================================================================
+
+  test('it should return 422 when providing an invalid email', async (assert) => {
+
+  })
+
+//=====================================================================================
+
+  test('it should return 422 when providing an invalid password', async (assert) => {
+
+  })
+
+//=====================================================================================
+
+  test('it should return 422 when providing an invalid avatar', async (assert) => {
 
   })
 
