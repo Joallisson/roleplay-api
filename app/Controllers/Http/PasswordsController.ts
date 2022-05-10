@@ -7,7 +7,7 @@ export default class PasswordsController {
 
     const { email } = request.only(['email'])
 
-    const sended = await Mail.send((message) => {
+    await Mail.send((message) => {
       message
         .from('no-reply@roleplay.com')
         .to(email)
@@ -15,6 +15,7 @@ export default class PasswordsController {
         .text('Clique no link abaixo para redefinir sua senha')
     })
 
+    return response.noContent()
   }
 
 }
