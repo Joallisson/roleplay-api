@@ -285,6 +285,15 @@
     tmp-cache "^1.1.0"
     validator "^13.7.0"
 
+"@adonisjs/view@^6.1.4":
+  version "6.1.4"
+  resolved "https://registry.yarnpkg.com/@adonisjs/view/-/view-6.1.4.tgz#5d1ed3df8fc3a030ec992c608785b32511b24e8b"
+  integrity sha512-pX/st3SryIc3peC75z9oy++9wyUjh7+ETicCKS+eRB6+M0c+0Lt85ErGugWHhaxFo0CpH6ic0Mgh9iIE1tYmrA==
+  dependencies:
+    edge-error "^2.0.8"
+    edge-supercharged "^3.1.1"
+    edge.js "^5.3.5"
+
 "@arr/every@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@arr/every/-/every-1.0.1.tgz#22fe1f8e6355beca6c7c7bde965eb15cf994387b"
@@ -466,6 +475,11 @@
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/@poppinss/hooks/-/hooks-3.0.5.tgz#ae491fc11500bc9cb7e24f6b637704e7d9868505"
   integrity sha512-kazQstmIPq4n7/qjk5ms9SEiXtLEJ+EMZXxyXTupTVq7URFIUeULgXFv/F3vheLPCSzfByu/L2iO7M457RjszQ==
+
+"@poppinss/inspect@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@poppinss/inspect/-/inspect-1.0.1.tgz#b03df9c1204ee72e3b9dbd5c34029c39475fb21d"
+  integrity sha512-kLeEaBSGhlleyYvKc7c9s3uE6xv7cwyulE0EgHf4jU/CL96h0yC4mkdw1wvC1l1PYYQozCGy46FwMBAAMOobCA==
 
 "@poppinss/manager@^5.0.2":
   version "5.0.2"
@@ -1074,6 +1088,11 @@ astral-regex@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
   integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
+
+astring@^1.8.1:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/astring/-/astring-1.8.3.tgz#1a0ae738c7cc558f8e5ddc8e3120636f5cebcb85"
+  integrity sha512-sRpyiNrx2dEYIMmUXprS8nlpRg2Drs8m9ElX9vVEXaCB4XEAJhKfs7IcX0IwShjuOAjLR6wzIrgoptz1n19i1A==
 
 asynckit@^0.4.0:
   version "0.4.0"
@@ -1813,6 +1832,51 @@ duplexify@^4.1.2:
     inherits "^2.0.3"
     readable-stream "^3.1.1"
     stream-shift "^1.0.0"
+
+edge-error@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/edge-error/-/edge-error-2.0.8.tgz#7b561b957aa8284ab1540c05c5667be308a0a8d2"
+  integrity sha512-ORKH7rn/LEfgo0qrgoMMwFPfestNFvTO+dRLDmS+zgulhd9BVXfv/p+V6K3OyEeu2L0ysYp/71uHB31GIDe68A==
+
+edge-lexer@^4.0.10:
+  version "4.0.10"
+  resolved "https://registry.yarnpkg.com/edge-lexer/-/edge-lexer-4.0.10.tgz#231b23dbb386bd1ce71ab6e3c6e22ccd8ccff855"
+  integrity sha512-6hvRE0TkYyqogEGTU6GpNW3vf6PDA0U+zLEXIV4ZhsCRy2YX+FuprzitYpe69ZHC+BZdiFpdCn2Zqf1HOebqEg==
+  dependencies:
+    edge-error "^2.0.8"
+
+edge-parser@^8.0.14:
+  version "8.0.14"
+  resolved "https://registry.yarnpkg.com/edge-parser/-/edge-parser-8.0.14.tgz#1e8d8ca6849859b4e38e64bfb5408c0b4c5c3f86"
+  integrity sha512-N7mFw0JcozaHfHt5CJL53T8ETdAVr6aDoFa7cwjTN5qvtsYT8WyeTVO9720Rs0W8FVjliK/VZAkZ6dpxehJqFA==
+  dependencies:
+    acorn "^8.7.0"
+    astring "^1.8.1"
+    edge-error "^2.0.8"
+    edge-lexer "^4.0.10"
+    js-stringify "^1.0.2"
+
+edge-supercharged@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/edge-supercharged/-/edge-supercharged-3.1.1.tgz#dcf68c38cf26d11db4bceab44e06729daec1d39d"
+  integrity sha512-Pxgst3UeR+0PWuTIG2QHuFgFe73TMoVMphRsa/bOmIvOkQ87cD7+VxiS9ph2KbA4djJ2ChbdgtbNiIvju5yXEw==
+  dependencies:
+    "@poppinss/utils" "^3.1.3"
+    slash "^3.0.0"
+
+edge.js@^5.3.5:
+  version "5.3.5"
+  resolved "https://registry.yarnpkg.com/edge.js/-/edge.js-5.3.5.tgz#67b2a4a6d23731571543b5a841622a6280bc0054"
+  integrity sha512-nPmd4kXtYoJC26YZ5DET0mVov63P9G3GtYsP85S061BcW1WByk2btpVwqZmIUamT5Zic5KUjsHaQOK7jSxbdPQ==
+  dependencies:
+    "@poppinss/inspect" "^1.0.1"
+    "@poppinss/utils" "^4.0.4"
+    edge-error "^2.0.8"
+    edge-lexer "^4.0.10"
+    edge-parser "^8.0.14"
+    js-stringify "^1.0.2"
+    macroable "^7.0.1"
+    stringify-attributes "^2.0.0"
 
 editorconfig@^0.15.3:
   version "0.15.3"
@@ -3014,6 +3078,11 @@ joycon@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/joycon/-/joycon-3.1.1.tgz#bce8596d6ae808f8b68168f5fc69280996894f03"
   integrity sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==
+
+js-stringify@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/js-stringify/-/js-stringify-1.0.2.tgz#1736fddfd9724f28a3682adc6230ae7e4e9679db"
+  integrity sha1-Fzb939lyTyijaCrcYjCufk6Weds=
 
 js-tokens@^3.0.2:
   version "3.0.2"

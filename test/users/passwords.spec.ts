@@ -21,15 +21,21 @@ test.group('Password', (group) => {
 
 
     assert.isTrue(mailer.exists({ //Usando o email capturado para verificar se ele está tudo correto
-      subject: 'O envio de email deu certo',
+      subject: 'Bora ver dessa vez',
       to: [{
         address: user.email
       }],
       from: {
         address: 'no-reply@roleplay.com'
-      },
-      text: 'Clique no link abaixo para redefinir sua senha'
+      }
     }))
+
+    assert.isTrue(mailer.exists((mail) => { //Verificando se o nome do usuário está dentro do html que eu estou mandando pra ele no email
+      assert.include(mail.html!, user.username) //Essa exclamação é para dizer pro typescript que o html irá vir com certeza junto com o email
+
+      return true
+    }))
+
 
     Mail.restore() //Liberando os emails capturados
   })
