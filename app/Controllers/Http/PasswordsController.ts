@@ -48,10 +48,12 @@ export default class PasswordsController {
       .whereHas('tokens', (query) => {
         query.where('token', token)
       })
+      .preload('tokens') //Carrega os tokens do usuário
       .firstOrFail() //Vai pegar o primeiro usuario que encontrar pelo token e senão encontrar vai falhar
 
       userByToken.password = password
       await userByToken.save()
+      await userByToken.tokens[0].delete() //deletando o token depois de usar ele
 
     return response.noContent()
   }

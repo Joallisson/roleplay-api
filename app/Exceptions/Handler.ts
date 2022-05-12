@@ -28,7 +28,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
 
     //console.log({ error: JSON.stringify(error) })
 
-    if(error.status === 422)
+    if(error.status === 422) //Se der 422 use esse tratamento de excessões
       return ctx.response.status(error.status).send({
         code: 'BAD_REQUEST',
         message: error.message,
@@ -36,6 +36,14 @@ export default class ExceptionHandler extends HttpExceptionHandler {
         errors: error['messages']?.errors ? error['messages'].errors : ''
       })
 
-    return super.handle(error, ctx) //Se o status não for 422 quem vai lidar com esse erro vai ser o método da super classe
+    else if(error.code === 'E_ROW_NOT_FOUND')
+      return ctx.response.status(error.status).send({
+        code: 'BAD_REQUEST',
+        message: 'resource not found', //Informando que o recurso que estou procurando não foi encontrado
+        status: 404,
+      })
+
+
+    return super.handle(error, ctx) //Se o status não for nenhum aos que estão na condicional do if, quem vai lidar com esse erro vai ser o método da super classe
   }
 }
