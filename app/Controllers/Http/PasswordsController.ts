@@ -4,6 +4,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { randomBytes } from 'crypto'
 import { promisify } from 'util'
 import ForgotPasswordValidator from 'App/Validators/ForgotPasswordValidator';
+import ResetPasswordValidator from 'App/Validators/ResetPasswordValidator';
 
 export default class PasswordsController {
 
@@ -40,7 +41,7 @@ export default class PasswordsController {
 
   public async resetPassword({ request, response }: HttpContextContract){
 
-    const { token, password } = request.only(['token', 'password'])
+    const { token, password } = await request.validate(ResetPasswordValidator)
 
     //Verificando se o usuário que quer atualizar sua senha é o mesmo que está com o token guardado no bd
     const userByToken = await User.query() //Buscar usuario que tenha um token igual ao que é passado pela request
