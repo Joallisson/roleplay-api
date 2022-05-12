@@ -5,6 +5,7 @@ import { randomBytes } from 'crypto'
 import { promisify } from 'util'
 import ForgotPasswordValidator from 'App/Validators/ForgotPasswordValidator';
 import ResetPasswordValidator from 'App/Validators/ResetPasswordValidator';
+import TokenExpiredException from 'App/Exceptions/TokenExpiredException';
 
 export default class PasswordsController {
 
@@ -51,9 +52,14 @@ export default class PasswordsController {
       .preload('tokens') //Carrega os tokens do usuário
       .firstOrFail() //Vai pegar o primeiro usuario que encontrar pelo token e senão encontrar vai falhar
 
-      userByToken.password = password
-      await userByToken.save()
-      await userByToken.tokens[0].delete() //deletando o token depois de usar ele
+    const tokenAge = Math.abs(userByToken.tokens[0].createdAt.diffNow('hours').hours) //Vai contar o tempo de vida em horas do token que foi criado
+    if(tokenAge > 2) throw new TokenExpiredException() //Se o tempo de vida do token for maior que duas horas, retorna uma erro
+
+    userByToken.password = password
+    await userByToken.save()
+    await userByToken.tokens[0].delete() //deletando o token depois de usar ele
+
+
 
     return response.noContent()
   }
