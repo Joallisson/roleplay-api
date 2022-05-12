@@ -1,3 +1,4 @@
+import Hash from '@ioc:Adonis/Core/Hash';
 import { UserFactory } from 'Database/factories';
 import Database from '@ioc:Adonis/Lucid/Database';
 import test, { group } from "japa";
@@ -76,6 +77,10 @@ test.group('Password', (group) => {
       .post('/reset-password')
       .send({ token, password: '123456' })
       .expect(204)
+
+    await user.refresh() //atualiza a senha do usuario no modelo depois que o usuario atualizar a senha
+    const checkPassword = await Hash.verify(user.password, '123456')
+    assert.isTrue(checkPassword)
   })
 
 
