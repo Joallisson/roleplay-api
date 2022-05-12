@@ -39,7 +39,7 @@ test.group('Password', (group) => {
     Mail.restore() //Liberando os emails capturados
   })
 
-  test.only('it should create a reset password token', async (assert) => {
+  test('it should create a reset password token', async (assert) => {
 
     Mail.fake() //Quando eu não uso o Mail.fake() o Mail manda um email de verdade para alguém, mas isso usa minha cota de emails gratis
 
@@ -56,6 +56,15 @@ test.group('Password', (group) => {
       const tokens = await user.related('tokens').query()
 
       assert.isNotEmpty(tokens)
+  })
+
+  test.only('it should return 422 when required data is not provided or data is invalid', async (assert) => {
+
+    const { body } = await supertest(BASE_URL).post('/forgot-password').send({}).expect(422)
+
+    assert.equal(body.code, 'BAD_REQUEST')
+    assert.equal(body.status, 422)
+
   })
 
 

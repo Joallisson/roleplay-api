@@ -3,12 +3,13 @@ import Mail from '@ioc:Adonis/Addons/Mail';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { randomBytes } from 'crypto'
 import { promisify } from 'util'
+import ForgotPasswordValidator from 'App/Validators/ForgotPasswordValidator';
 
 export default class PasswordsController {
 
   public async forgotPassword({ request, response}: HttpContextContract){
 
-    const { email, resetPasswordUrl } = request.only(['email', 'resetPasswordUrl'])
+    const { email, resetPasswordUrl } = await request.validate(ForgotPasswordValidator)
     const user = await User.findByOrFail('email', email)
 
 
