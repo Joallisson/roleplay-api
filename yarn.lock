@@ -53,6 +53,15 @@
     picomatch "^2.3.1"
     slash "^3.0.0"
 
+"@adonisjs/auth@^8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@adonisjs/auth/-/auth-8.1.0.tgz#f4aa283cb801b6ab143d0220c99eb1ef2353087a"
+  integrity sha512-a0ZTDeTF6YnIGw6qeD+36kcM7cr88L2HHTpCzcrkuAqGo/Ebvd4JIj7MLnqQl1XEyOEDuCClB1VO6Wd74hTaaw==
+  dependencies:
+    "@poppinss/hooks" "^5.0.3"
+    "@poppinss/utils" "^4.0.3"
+    luxon "^2.3.1"
+
 "@adonisjs/bodyparser@^8.1.3":
   version "8.1.3"
   resolved "https://registry.yarnpkg.com/@adonisjs/bodyparser/-/bodyparser-8.1.3.tgz#e6d46514b30a25d4cf4dcfa71dcd582a27cb2e4d"
@@ -475,6 +484,11 @@
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/@poppinss/hooks/-/hooks-3.0.5.tgz#ae491fc11500bc9cb7e24f6b637704e7d9868505"
   integrity sha512-kazQstmIPq4n7/qjk5ms9SEiXtLEJ+EMZXxyXTupTVq7URFIUeULgXFv/F3vheLPCSzfByu/L2iO7M457RjszQ==
+
+"@poppinss/hooks@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@poppinss/hooks/-/hooks-5.0.3.tgz#7c911f62d303ba79011546d8953616dea36a602d"
+  integrity sha512-M5a151VUl+RslVP5qwDW+u+0VmzKt5Nfplzdx2nrtXol3yVlLN3u2Jp6UADESid3DDI7IRHmFrA3sQusey3eUA==
 
 "@poppinss/inspect@^1.0.1":
   version "1.0.1"
