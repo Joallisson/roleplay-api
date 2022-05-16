@@ -5,8 +5,8 @@
  * file.
  */
 
- //import { AuthConfig } from '@ioc:Adonis/Addons/Auth';
- import { AuthConfig } from '@ioc:Adonis'
+ import { AuthConfig } from '@ioc:Adonis/Addons/Auth';
+//import { AuthConfig } from '@ioc:Adonis'
 
 /*
 |--------------------------------------------------------------------------

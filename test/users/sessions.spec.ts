@@ -9,7 +9,7 @@ test.group('Session', (group) => {
 
   test.only('it should authenticate an user', async (assert) => {
     const plainPassword = 'test'
-    const { email, id } = await UserFactory.merge({email: plainPassword}).create()
+    const { email, id } = await UserFactory.merge({password: plainPassword}).create()
 
     const { body } = await supertest(BASE_URL)
       .post('/sessions')
