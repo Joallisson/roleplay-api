@@ -7,7 +7,7 @@ const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Session', (group) => {
 
-  test.only('it should authenticate an user', async (assert) => {
+  test('it should authenticate an user', async (assert) => {
     const plainPassword = 'test'
     const { email, id } = await UserFactory.merge({password: plainPassword}).create()
 
@@ -21,6 +21,18 @@ test.group('Session', (group) => {
 
   })
 
+  test.only('it should return an api token when session is created', async (assert) => {
+    const plainPassword = 'test'
+    const { email, id } = await UserFactory.merge({password: plainPassword}).create()
+
+    const { body } = await supertest(BASE_URL)
+      .post('/sessions')
+      .send({email, password: plainPassword})
+      .expect(201)
+
+    assert.isDefined(body.token, 'Token undefined')
+    assert.equal(body.user.id, id)
+  })
 
   group.beforeEach(async () => {
     await Database.beginGlobalTransaction()
