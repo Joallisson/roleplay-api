@@ -6,17 +6,7 @@ import Hash from '@ioc:Adonis/Core/Hash'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
-/*
-  {
-    "users": {
-      "id": number,
-      "email": string,
-      "username": string,
-      "password": string,
-      "avatar": string
-    }
-  }
-*/
+let token
 
 test.group('User', (group) => {
   test('it should create an user', async (assert) => {
@@ -126,6 +116,7 @@ test('it should return 422 when providing an invalid password', async (assert) =
 
     const { body } = await supertest(BASE_URL) //mandando requisição para o servidor de teste
       .put(`/users/${id}`)
+      .set('Authorization', `Bearer ${token}`) //Passando dados pelo cabeçalho da requisição, nesse caso está dizendo que esse usuário está autenticado
       .send({
         email,
         avatar,
@@ -151,6 +142,7 @@ test('it should return 422 when providing an invalid password', async (assert) =
 
     const { body } = await supertest(BASE_URL) //mandando requisição para o servidor de teste e retornando o body/corpo da resposta
       .put(`/users/${user.id}`)
+      .set('Authorization', `Bearer ${token}`) //Passando dados pelo cabeçalho da requisição, nesse caso está dizendo que esse usuário está autenticado
       .send({
         email: user.email,
         avatar: user.avatar,
@@ -170,7 +162,11 @@ test('it should return 422 when providing an invalid password', async (assert) =
 
   test('it should return 422 when required data is not provided', async (assert) => {
     const { id } = await UserFactory.create()
-    const { body } = await supertest(BASE_URL).put(`/users/${id}`).send({}).expect(422)
+    const { body } = await supertest(BASE_URL)
+    .put(`/users/${id}`)
+    .set('Authorization', `Bearer ${token}`) //Passando dados pelo cabeçalho da requisição, nesse caso está dizendo que esse usuário está autenticado
+    .send({})
+    .expect(422)
 
     assert.equal(body.code, 'BAD_REQUEST')
     assert.equal(body.status, 422)
@@ -180,7 +176,10 @@ test('it should return 422 when providing an invalid password', async (assert) =
 
   test('it should return 422 when providing an invalid email', async (assert) => {
     const { id, password, avatar } = await UserFactory.create()
-    const { body } = await supertest(BASE_URL).put(`/users/${id}`).send({
+    const { body } = await supertest(BASE_URL)
+    .put(`/users/${id}`)
+    .set('Authorization', `Bearer ${token}`) //Passando dados pelo cabeçalho da requisição, nesse caso está dizendo que esse usuário está autenticado
+    .send({
       password,
       avatar,
       email: 'teste@'
@@ -194,7 +193,10 @@ test('it should return 422 when providing an invalid password', async (assert) =
 
   test('it should return 422 when providing an invalid password', async (assert) => {
     const { id, email, avatar } = await UserFactory.create()
-    const { body } = await supertest(BASE_URL).put(`/users/${id}`).send({
+    const { body } = await supertest(BASE_URL)
+      .put(`/users/${id}`)
+      .set('Authorization', `Bearer ${token}`) //Passando dados pelo cabeçalho da requisição, nesse caso está dizendo que esse usuário está autenticado
+      .send({
       password: 'te',
       avatar,
       email
@@ -208,7 +210,10 @@ test('it should return 422 when providing an invalid password', async (assert) =
 
   test('it should return 422 when providing an invalid avatar', async (assert) => {
     const { id, password, email } = await UserFactory.create()
-    const { body } = await supertest(BASE_URL).put(`/users/${id}`).send({
+    const { body } = await supertest(BASE_URL)
+    .put(`/users/${id}`)
+    .set('Authorization', `Bearer ${token}`) //Passando dados pelo cabeçalho da requisição, nesse caso está dizendo que esse usuário está autenticado
+    .send({
       password,
       avatar: 'teste',
       email
@@ -219,6 +224,18 @@ test('it should return 422 when providing an invalid password', async (assert) =
   })
 
 //=====================================================================================
+
+  group.before(async () => { //esse hook roda antes de cada teste
+    const plainPassword = 'test'
+    const { email } = await UserFactory.merge({password: plainPassword}).create() //cria o usuário no bd
+
+    const { body } = await supertest(BASE_URL) //manda as credenciais para logar na api
+      .post('/sessions')
+      .send({email, password: plainPassword})
+      .expect(201)
+
+    token = body.token.token
+  })
 
   group.beforeEach(async () => { //Antes de executar cada teste, inicia uma transação
     await Database.beginGlobalTransaction()
