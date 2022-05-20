@@ -1,4 +1,3 @@
-import { group } from 'japa';
 import { UserFactory } from 'Database/factories';
 import Database from '@ioc:Adonis/Lucid/Database';
 import test from 'japa'
@@ -19,7 +18,10 @@ test.group('Group', (group) => {
       master: user.id //mestre da mesa
     }
 
-    const { body } = await supertest(BASE_URL).post('/groups').send({groupPayload}).expect(201)
+    const { body } = await supertest(BASE_URL)
+    .post('/groups')
+    .send(groupPayload)
+    .expect(201)
 
     assert.exists(body.group, 'Group undefined')
     assert.equal(body.group.name, groupPayload.name)
