@@ -7,7 +7,7 @@ const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Group', (group) => {
 
-  test.only('it should create a group', async (assert) => {
+  test('it should create a group', async (assert) => {
     const user = await UserFactory.create()
     const groupPayload = { //detalhes da mesa
       name: 'test', //nome da mesa
@@ -33,6 +33,15 @@ test.group('Group', (group) => {
 
   })
 
+  test.only('it should return 422 when required data is not provided', async (assert) => {
+    const { body } = await supertest(BASE_URL)
+    .post('/groups')
+    .send({})
+    .expect(422)
+
+    assert.equal(body.code, 'BAD_REQUEST')
+    assert.equal(body.status, 422)
+  })
 
   group.beforeEach(async () => {
     await Database.beginGlobalTransaction()
