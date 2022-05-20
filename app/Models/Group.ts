@@ -1,6 +1,6 @@
 import User from 'App/Models/User';
 import { DateTime } from 'luxon'
-import { BaseModel, column, BelongsTo, belongsTo } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, BelongsTo, belongsTo, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Group extends BaseModel {
   @column({ isPrimary: true })
@@ -29,6 +29,12 @@ export default class Group extends BaseModel {
     foreignKey: 'master' //esse master é a coluna master desse modelo que contém o id do usuário que é o mestre da mesa
   })
   public masterUser: BelongsTo<typeof User> //Relacionamento 1 para 1/BelongsTo => uma mesa/grupo tem um mestre
+
+  //Relacionamento muitos para muitos
+  @manyToMany(() => User, { //Relacionamento muitos para muitos N para N, onde é criado uma tabela pivô com os usuários e os grupos que irão participar dos jogos
+    pivotTable: 'groups_users' //Definir a tabela onde vai estar os grupos e usuários
+  })
+  public players: ManyToMany<typeof User> //Nos GRUPOS tem a lista de players => RELACIONAMENTO COM A: LISTA DE PLAYERS
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
