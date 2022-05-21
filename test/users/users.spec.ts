@@ -240,6 +240,10 @@ test('it should return 422 when providing an invalid password', async (assert) =
     user = newUser
   })
 
+  group.after(async () => { //depois de executar todos os testes, o adonis vai revogar/apagar o token do usuário criado no hook before
+    await supertest(BASE_URL).delete('/sessions').set('Authorization', `Bearer ${token}`)
+  })
+
   group.beforeEach(async () => { //Antes de executar cada teste, inicia uma transação
     await Database.beginGlobalTransaction()
   })
