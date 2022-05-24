@@ -12,7 +12,7 @@ let user = {} as User //Criando uma variável que irá guardar o usuário que se
 
 test.group('Group  Request', (group) => {
 
-  test.only('it should create a group request', async (assert) => {
+  test('it should create a group request', async (assert) => {
     const {id} = await UserFactory.create() //Criando o master/mestre
     const group = await GroupFactory.merge({master: id}).create() //criando o grupo e passando o id do master para ser o mestre do grupo
     const { body } = await supertest(BASE_URL)
@@ -26,6 +26,26 @@ test.group('Group  Request', (group) => {
     assert.equal(body.groupRequest.groupId, group.id)
     assert.equal(body.groupRequest.status, 'PENDING')
   })
+
+  test.only('it should return 409 when group request already exists', async (assert) => {
+    const { id } = await UserFactory.create()
+    const group = await GroupFactory.merge({master: id}).create()
+
+    await supertest(BASE_URL) //Solicitando pela primeira vez para participar do grupo
+      .post(`/groups/${group.id}/requests`)
+      .set('Authorization', `Bearer ${token}`) //passando o token do usuário global
+      .send({})
+
+    const { body } = await supertest(BASE_URL)
+      .post(`/groups/${group.id}/requests`)
+      .set('Authorization', `Bearer ${token}`) //Passando o token do mesmo usuário que fez a solicitação na primeira vez para participar do grupo
+      .send({})
+      .expect(409) //O status/codigo 409 significa conflito
+
+    assert.equal(body.code, 'BAD_REQUEST')
+    assert.equal(body.status, 409)
+  })
+
 
 
   group.before(async () => { //esse hook roda antes de cada teste
