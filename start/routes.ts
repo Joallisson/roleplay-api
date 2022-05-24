@@ -33,4 +33,5 @@ Route.post('/reset-password', 'PasswordsController.resetPassword')
 Route.post('/sessions', 'SessionsController.store')
 Route.delete('/sessions', 'SessionsController.destroy')
 
-Route.post('/groups', 'GroupsController.store').middleware('auth')
+Route.post('/groups', 'GroupsController.store').middleware('auth') //Rota para criar o grupo, e a rota está protegido pelo middleware por que o usuário deve estar autenticado para criar o grupo
+Route.post('/groups/:groupId/requests', 'GroupRequestsController.store')
