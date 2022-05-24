@@ -9,19 +9,19 @@ export default class GroupRequest extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column({ columnName: 'user_id'})
+  @column({ columnName: 'user_id', serializeAs: 'userId'}) //Nome do campo no bd e o formato camelCase que será usado para formatar os valores de retorno
   public userId: number
 
   @belongsTo(() => User, { //Relacionamento 1 para 1
-    foreignKey: 'userId'
+    foreignKey: 'userId' //o campo userId percente ao User
   })
   public user: BelongsTo<typeof User> //A requisição para o grupo pertence ao usuário
 
-  @column({ columnName: 'group_id' })
+  @column({ columnName: 'group_id', serializeAs: 'groupId' }) //Nome do campo no bd e o formato camelCase que será usado para formatar os valores de retorno
   public groupId: number
 
   @belongsTo(() => Group, { //Relacionamento 1 para 1
-    foreignKey: 'groupId'
+    foreignKey: 'groupId' //o campo groupId percente ao Group
   })
   public group: BelongsTo<typeof Group> //A requisição do usuário para o grupo
 

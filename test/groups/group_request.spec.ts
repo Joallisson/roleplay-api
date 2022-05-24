@@ -3,16 +3,21 @@ import { GroupFactory } from './../../database/factories/index';
 import Database from '@ioc:Adonis/Lucid/Database';
 import test from 'japa'
 import supertest from 'supertest'
+import User from 'App/Models/User';
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
+
+let token //Criando uma variável que irá guardar o token do usuário que será criado no hook group.before()
+let user = {} as User //Criando uma variável que irá guardar o usuário que será criado no hook group.before()
 
 test.group('Group  Request', (group) => {
 
   test.only('it should create a group request', async (assert) => {
-    const user = await UserFactory.create() //Criando o master
-    const group = await GroupFactory.merge({master: user.id}).create() //criando o grupo e passando o id do master para ser o mestre do grupo
+    const {id} = await UserFactory.create() //Criando o master/mestre
+    const group = await GroupFactory.merge({master: id}).create() //criando o grupo e passando o id do master para ser o mestre do grupo
     const { body } = await supertest(BASE_URL)
-    .post(`/groups/${group.id}/requests`)
+    .post(`/groups/${group.id}/requests`) //passando no endpoint o id do grupo que o usuário quer participar
+    .set('Authorization', `Bearer ${token}`) //Passando cabeçalho //Passando nome do cabeçalho e o token de autenticação
     .send({})
     .expect(201)//o 201 é quando o objeto é criado
 
@@ -23,7 +28,26 @@ test.group('Group  Request', (group) => {
   })
 
 
+  group.before(async () => { //esse hook roda antes de cada teste
 
+    //NESSE CASO O USUÁRIO ESTÁ SENDO CRIADO PRIMEIRO E ANTES DOS TESTES, POIS ELE SERÁ CRIADO GLOBALMENTE E USADO POR TODOS OS TESTES
+    //PARA UM USUARIO TER AUTORIZAÇÃO DETRO DA API, ELE PRECISA SE AUTENTICAR E SERÁ CRIADO UM TOKEN PARA SER USADO PELO USUÁRIO ENQUANTO ELE NÃO FIZER LOGOUT
+    //QUANDO UM USUÁRIO CRIA UMA SESSÃO/FAZ LOGIN ELE RECEBE UM TOKEN QUE É USADO PARA SABER SE ELE TEM PERMISSÃO REALIZAR DETERMINADAS AÇÕES DENTRO DA API
+    const plainPassword = 'test'
+    const newUser = await UserFactory.merge({password: plainPassword}).create() //cria o usuário no bd
+
+    const { body } = await supertest(BASE_URL) //manda as credenciais para logar na api
+      .post('/sessions')
+      .send({email: newUser.email, password: plainPassword})
+      .expect(201)
+
+    token = body.token.token
+    user = newUser
+  })
+
+  group.after(async () => { //depois de executar todos os testes, o adonis vai revogar/apagar o token do usuário criado no hook before
+    await supertest(BASE_URL).delete('/sessions').set('Authorization', `Bearer ${token}`)
+  })
 
   group.beforeEach(async () => { //Hook para antes de cada transação
     await Database.beginGlobalTransaction()
