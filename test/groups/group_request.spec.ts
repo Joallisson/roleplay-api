@@ -46,7 +46,7 @@ test.group('Group  Request', (group) => {
     assert.equal(body.status, 409)
   })
 
-  test.only('it should return 422 when user is already in the group', async (assert) => {
+  test('it should return 422 when user is already in the group', async (assert) => {
     const groupPayload = { //dados do grupo
       name: 'test',
       description: 'test',
