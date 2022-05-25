@@ -5,6 +5,10 @@ import Group from 'App/Models/Group';
 
 export default class GroupRequestsController {
 
+  public async index({ request, response }: HttpContextContract){
+    return response.ok({})
+  }
+
   public async store({request, response, auth}: HttpContextContract){
 
     const groupId = request.param('groupId') as number //Pegando o groupId que é passado como parâmetro na url da rota e covertendo para number
