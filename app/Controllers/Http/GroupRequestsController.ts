@@ -13,7 +13,7 @@ export default class GroupRequestsController {
       .where('groupId', groupId) //O primeiro paâmetro é o campo e o segundo o valor
       .andWhere('userId', userId) //O primeiro paâmetro é o campo e o segundo o valor
       .first() //vai pegar o primeiro valor que encontrar
-    if(existingGroupRequest) throw new BadRequest('group request already exists', 409) //SE O MESMO USUÁRIO FIZER MAIS DE UMA SOLICITÇÃO PARA PARTICIPAR DO MESMO GRUPO ENTÃO RETORNA ESSE ERROR
+    if(existingGroupRequest) throw new BadRequest('group request already exists', 409) //SE O MESMO USUÁRIO FIZER MAIS DE UMA SOLICITÇÃO PARA PARTICIPAR DO MESMO GRUPO ENTÃO RETORNA ESSA BAD REQUEST
 
     const groupRequest = await GroupRequest.create({ groupId, userId })
 
