@@ -1,3 +1,4 @@
+import { group } from 'japa';
 import { UserFactory } from 'Database/factories';
 import { GroupFactory } from './../../database/factories/index';
 import Database from '@ioc:Adonis/Lucid/Database';
@@ -75,7 +76,27 @@ test.group('Group  Request', (group) => {
   test.only('it should list group requests', async (assert) => {
     const master = await UserFactory.create()
     const group = await GroupFactory.merge({ master: master.id }).create()
-    await supertest(BASE_URL).get(`/groups/${group.id}/requests?master=${master.id}`).expect(200) //Retorna uma lista de usuários do filtrando pelo master
+
+    const response = await supertest(BASE_URL) //Fazendo uma solicitação para entrar em um grupo
+      .post(`/groups/${group.id}/requests`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({})
+
+    const groupRequest = response.body.groupRequest
+
+    const { body } = await supertest(BASE_URL) //retornando lista de usuarios e grupos filtrando pelo id master
+      .get(`/groups/${group.id}/requests?master=${master.id}`)
+      .expect(200) //Retorna uma lista de usuários filtrando pelo master
+
+    assert.exists(body.groupRequest, 'GroupRequest undefined')
+    assert.equal(Object.values(body.groupRequest).length, 1)
+    assert.equal(body.groupRequest[0].id, groupRequest.id)
+    assert.equal(body.groupRequest[0].userId, groupRequest.userId)
+    assert.equal(body.groupRequest[0].groupId, groupRequest.groupId)
+    assert.equal(body.groupRequest[0].status, groupRequest.status)
+    assert.equal(body.groupRequest[0].group.name, group.name)
+    assert.equal(body.groupRequest[0].user.username, user.username)
+    assert.equal(body.groupRequest[0].group.master, master.id)
 
   })
 

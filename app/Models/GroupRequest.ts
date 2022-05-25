@@ -15,7 +15,7 @@ export default class GroupRequest extends BaseModel {
   @belongsTo(() => User, { //Relacionamento 1 para 1
     foreignKey: 'userId' //o campo userId percente ao User
   })
-  public user: BelongsTo<typeof User> //A requisição para o grupo pertence ao usuário
+  public user: BelongsTo<typeof User> //A requisição para o grupo pertence ao usuário ////Nome do relacionamento
 
   @column({ columnName: 'group_id', serializeAs: 'groupId' }) //Nome do campo no bd e o formato camelCase que será usado para formatar os valores de retorno
   public groupId: number
@@ -23,7 +23,7 @@ export default class GroupRequest extends BaseModel {
   @belongsTo(() => Group, { //Relacionamento 1 para 1
     foreignKey: 'groupId' //o campo groupId percente ao Group
   })
-  public group: BelongsTo<typeof Group> //A requisição do usuário para o grupo
+  public group: BelongsTo<typeof Group> //Nome do relacionamento
 
   @column()
   public status: string

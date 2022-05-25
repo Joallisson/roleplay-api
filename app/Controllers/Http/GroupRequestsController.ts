@@ -6,7 +6,17 @@ import Group from 'App/Models/Group';
 export default class GroupRequestsController {
 
   public async index({ request, response }: HttpContextContract){
-    return response.ok({})
+
+    const { master } = request.qs() //retorna os parâmetros passados depois do sinal de interrogação // request.qs() significa query string da requisição
+    const groupRequest = await GroupRequest.query() //listando uma lista de usuários baseado pelo id passado na requisição
+      .preload('group') //vai carregar o relacionamento group para retornar dentro do groupRequest
+      .preload('user') //vai carregar o relacionamento user para retornar dentro do groupRequest
+      .whereHas('group', (query) => { //Passa o relacionamento como primeiro parâmetro e o segundo uma arrow function
+          query.where('master', Number(master)) //dentro do relacionamento grupo busca o id passado na requisição // converte o master para number no segundo parâmetro
+        })
+      .where('status', 'PENDING')
+
+    return response.ok({groupRequest})
   }
 
   public async store({request, response, auth}: HttpContextContract){
