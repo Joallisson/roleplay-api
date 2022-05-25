@@ -9,8 +9,13 @@ export default class GroupRequestsController {
 
     const { master } = request.qs() //retorna os parâmetros passados depois do sinal de interrogação // request.qs() significa query string da requisição
     const groupRequest = await GroupRequest.query() //listando uma lista de usuários baseado pelo id passado na requisição
-      .preload('group') //vai carregar o relacionamento group para retornar dentro do groupRequest
-      .preload('user') //vai carregar o relacionamento user para retornar dentro do groupRequest
+      .select('id', 'groupId', 'userId', 'status') //os campos do GroupRequest que eu vou querer
+      .preload('group', (query) => {
+        query.select('name', 'master') //os campos do group que eu vou querer
+      }) //vai carregar o relacionamento group para retornar dentro do groupRequest
+      .preload('user', (query) => {
+        query.select('username') //os campos do group que eu vou querer
+      }) //vai carregar o relacionamento user para retornar dentro do groupRequest
       .whereHas('group', (query) => { //Passa o relacionamento como primeiro parâmetro e o segundo uma arrow function
           query.where('master', Number(master)) //dentro do relacionamento grupo busca o id passado na requisição // converte o master para number no segundo parâmetro
         })
