@@ -8,6 +8,9 @@ export default class GroupRequestsController {
   public async index({ request, response }: HttpContextContract){
 
     const { master } = request.qs() //retorna os parâmetros passados depois do sinal de interrogação // request.qs() significa query string da requisição
+
+    if(!master) throw new BadRequest('master query should be provided', 422) //caso não seja passado o id do mestre como filtro nos parâmetros na requisição, então retorna uma BadRequest
+
     const groupRequest = await GroupRequest.query() //listando uma lista de usuários baseado pelo id passado na requisição
       .select('id', 'groupId', 'userId', 'status') //os campos do GroupRequest que eu vou querer
       .preload('group', (query) => {

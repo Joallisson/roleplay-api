@@ -73,7 +73,7 @@ test.group('Group  Request', (group) => {
     assert.equal(body.status, 422)
   })
 
-  test.only('it should list group requests', async (assert) => {
+  test('it should list group requests', async (assert) => {
     const master = await UserFactory.create()
     const group = await GroupFactory.merge({ master: master.id }).create()
 
@@ -84,7 +84,7 @@ test.group('Group  Request', (group) => {
 
     const groupRequest = response.body.groupRequest
 
-    const { body } = await supertest(BASE_URL) //retornando lista de usuarios e grupos filtrando pelo id master
+    const { body } = await supertest(BASE_URL) //Listando solicitações para mesas filtradas pelo mestre
       .get(`/groups/${group.id}/requests?master=${master.id}`)
       .expect(200) //Retorna uma lista de usuários filtrando pelo master
 
@@ -98,6 +98,35 @@ test.group('Group  Request', (group) => {
     assert.equal(body.groupRequest[0].user.username, user.username)
     assert.equal(body.groupRequest[0].group.master, master.id)
 
+  })
+
+  test('it should return an empty list when master has no group requests', async (assert) => {
+    const master = await UserFactory.create()
+    const group = await GroupFactory.merge({ master: master.id }).create()
+
+    await supertest(BASE_URL) //Fazendo uma solicitação para entrar em um grupo
+      .post(`/groups/${group.id}/requests`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({})
+
+    const { body } = await supertest(BASE_URL) //Listando solicitações para mesas filtradas pelo mestre
+      .get(`/groups/${group.id}/requests?master=${user.id}`)
+      .expect(200) //Retorna uma lista de usuários filtrando pelo user.id
+
+      assert.exists(body.groupRequest, 'GroupRequests undefined')
+      assert.equal(Object.values(body.groupRequest).length, 0)
+  })
+
+  test('it should return 422 when master is not provided', async (assert) => {
+    const master = await UserFactory.create()
+    const group = await GroupFactory.merge({ master: master.id }).create()
+
+    const { body } = await supertest(BASE_URL) //Listando solicitações para mesas filtradas pelo mestre
+      .get(`/groups/${group.id}/requests`)
+      .expect(422) //Retorna uma lista de usuários filtrando pelo user.id
+
+      assert.exists(body.code, 'BAD_REQUEST')
+      assert.equal(body.status, 422)
   })
 
   group.before(async () => { //esse hook roda antes de cada teste
