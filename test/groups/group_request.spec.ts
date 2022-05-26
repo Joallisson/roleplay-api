@@ -129,6 +129,20 @@ test.group('Group  Request', (group) => {
       assert.equal(body.status, 422)
   })
 
+  test.only('it should accept a group request', async (assert) => {
+    const master = await UserFactory.create()
+    const group = await GroupFactory.merge({ master: master.id }).create()
+
+    const { body } = await supertest(BASE_URL) //Fazendo uma solicitação para entrar em um grupo
+      .post(`/groups/${group.id}/requests`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({})
+
+    await supertest(BASE_URL)
+    .post(`/groups/${group.id}/requests/${body.groupRequest.id}/accept`)
+    .expect(200) //retorna um .ok()
+  })
+
   group.before(async () => { //esse hook roda antes de cada teste
 
     //NESSE CASO O USUÁRIO ESTÁ SENDO CRIADO PRIMEIRO E ANTES DOS TESTES, POIS ELE SERÁ CRIADO GLOBALMENTE E USADO POR TODOS OS TESTES
