@@ -55,7 +55,7 @@ export default class GroupRequestsController {
     return response.created({groupRequest})
   }
 
-  public async accept({ request, response }: HttpContextContract){
+  public async accept({ request, response, bouncer }: HttpContextContract){
 
     const requestId = request.param('requestId') as number
     const groupId = request.param('groupId') as number
@@ -64,6 +64,9 @@ export default class GroupRequestsController {
       .where('id', requestId)
       .andWhere('groupId', groupId)
       .firstOrFail() //Encontra e retorna o primeiro registro que tenha o id e o groupId no bd
+
+    await groupRequest.load('group') //carregando o relacionamento group
+    await bouncer.authorize('acceptGroupRequest', groupRequest) //autorizando aceitar o usuário na mesa coma regra acceptGroupRequest criada no bouncer e passando o groupRequest como parâmetro
 
     const updateGroupRequest = await groupRequest.merge({ status: 'ACCEPTED' }) //Atualiza o status da solicitação para ACCEPTED
 
@@ -73,7 +76,7 @@ export default class GroupRequestsController {
     return response.ok({ groupRequest: updateGroupRequest })
   }
 
-  public async destroy({ request, response }: HttpContextContract){
+  public async destroy({ request, response, bouncer }: HttpContextContract){
 
     const requestId = request.param('requestId') as number
     const groupId = request.param('groupId') as number
@@ -82,6 +85,9 @@ export default class GroupRequestsController {
       .where('id', requestId)
       .andWhere('groupId', groupId)
       .firstOrFail() //Encontra e retorna o primeiro registro que tenha o id e o groupId no bd
+
+      await groupRequest.load('group') //carregando o relacionamento group
+      await bouncer.authorize('rejectGroupRequest', groupRequest) //autorizando rejeitar o usuário na mesa coma regra acceptGroupRequest criada no bouncer e passando o groupRequest como parâmetro
 
     await groupRequest.delete() //deletando/negando a solicitação do usuário de fazer parte da mesa
 

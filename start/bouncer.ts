@@ -1,3 +1,4 @@
+import GroupRequest from 'App/Models/GroupRequest';
 import User from 'App/Models/User';
 /**
  * Contract source: https://git.io/Jte3T
@@ -32,6 +33,12 @@ import Bouncer from '@ioc:Adonis/Addons/Bouncer'
 */
 export const { actions } = Bouncer.define('updateUser', (user: User, updatedUser: User) => { //O usuário que vai atualizar e o que vai ser atualizado devem ser o mesmo
   return user.id === updatedUser.id //O id usuário autenticado tem que ser igual ao id do usuário que está sendo atualizado
+})
+.define('acceptGroupRequest', (user: User, groupRequest: GroupRequest) => { //Criando autorizador que diz que só o mestre da mesa pode aceitar as solicitãçoes para participar da mesa
+  return user.id === groupRequest.group.master //O id do usuário tem que ser igual ao id do mestre da mesa
+})
+.define('rejectGroupRequest', (user: User, groupRequest: GroupRequest) => { //Criando autorizador que diz que só o mestre da mesa pode rejeitar as solicitãçoes para participar da mesa
+  return user.id === groupRequest.group.master //O id do usuário tem que ser igual ao id do mestre da mesa
 })
 
 /*
