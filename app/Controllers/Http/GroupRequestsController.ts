@@ -73,4 +73,20 @@ export default class GroupRequestsController {
     return response.ok({ groupRequest: updateGroupRequest })
   }
 
+  public async destroy({ request, response }: HttpContextContract){
+
+    const requestId = request.param('requestId') as number
+    const groupId = request.param('groupId') as number
+
+    const groupRequest = await GroupRequest.query() //Vai no modelo/tabela do bd e onde o campo id for igual ao id passado na requisição e também verifica onde groupId é igual ao groupId passado requisição
+      .where('id', requestId)
+      .andWhere('groupId', groupId)
+      .firstOrFail() //Encontra e retorna o primeiro registro que tenha o id e o groupId no bd
+
+    await groupRequest.delete() //deletando/negando a solicitação do usuário de fazer parte da mesa
+
+    return response.ok({})
+
+  }
+
 }

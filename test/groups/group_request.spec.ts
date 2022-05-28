@@ -1,3 +1,4 @@
+import GroupRequest from 'App/Models/GroupRequest';
 import { group } from 'japa';
 import { UserFactory } from 'Database/factories';
 import { GroupFactory } from './../../database/factories/index';
@@ -201,9 +202,13 @@ test.group('Group  Request', (group) => {
       .set('Authorization', `Bearer ${token}`) //Passando o user global como sendo o usuário que quer participar de uma mesa //o token do usuário já possui todas as informações do usuário
       .send({})
 
-    const response = await supertest(BASE_URL) //Aceitar solicitação de usuário para participar da mesa
-      .post(`/groups/${group.id}/requests/${body.groupRequest.id}`)
-      .expect(404) //retorna uma BadRequest()
+    await supertest(BASE_URL) //Aceitar solicitação de usuário para participar da mesa
+      .delete(`/groups/${group.id}/requests/${body.groupRequest.id}`)
+      .expect(200)
+
+    const groupRequest = await GroupRequest.find(body.groupRequest.id) //Fazendo uma consulta no bd e verificando se encontra o id da requisição para fazer parte do grupo
+
+    assert.isNull(groupRequest)
   })
 
 
