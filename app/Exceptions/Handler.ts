@@ -35,12 +35,14 @@ export default class ExceptionHandler extends HttpExceptionHandler {
         status: error.status,
         errors: error['messages']?.errors ? error['messages'].errors : ''
       })
+
     else if(error.code === 'E_ROW_NOT_FOUND') //Se o código da axcessão for igual a 'E_ROW_NOT_FOUND'
       return ctx.response.status(error.status).send({
         code: 'BAD_REQUEST',
         message: 'resource not found', //Informando que o recurso que estou procurando não foi encontrado
         status: 404,
       })
+
     else if(['E_INVALID_AUTH_UID', 'E_INVALID_AUTH_PASSWORD'].includes(error.code || '')) //Se esses codigos de error estiverem incluidos dentro de error code (a string vazia dentro do includes é pra caso não houver error.code)
       return ctx.response.status(error.status).send({
         code: 'BAD_REQUEST',
