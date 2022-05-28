@@ -192,6 +192,22 @@ test.group('Group  Request', (group) => {
       assert.equal(response.body.status, 404)
   })
 
+  test.only('it should reject a group request', async (assert) => {
+    const master = await UserFactory.create()
+    const group = await GroupFactory.merge({ master: master.id }).create()
+
+    const { body } = await supertest(BASE_URL) //Usuário Fazendo uma solicitação para entrar em um grupo
+      .post(`/groups/${group.id}/requests`)
+      .set('Authorization', `Bearer ${token}`) //Passando o user global como sendo o usuário que quer participar de uma mesa //o token do usuário já possui todas as informações do usuário
+      .send({})
+
+    const response = await supertest(BASE_URL) //Aceitar solicitação de usuário para participar da mesa
+      .post(`/groups/${group.id}/requests/${body.groupRequest.id}`)
+      .expect(404) //retorna uma BadRequest()
+  })
+
+
+
 
 
   group.before(async () => { //esse hook roda antes de cada teste

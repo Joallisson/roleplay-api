@@ -38,3 +38,4 @@ Route.post('/groups', 'GroupsController.store').middleware('auth') //Rota para c
 Route.get('/groups/:groupId/requests', 'GroupRequestsController.index')//.middleware('auth')
 Route.post('/groups/:groupId/requests', 'GroupRequestsController.store').middleware('auth')
 Route.post('/groups/:groupId/requests/:requestId/accept', 'GroupRequestsController.accept')//.middleware('auth')
+Route.delete('/groups/:groupId/requests/:requestId', 'GroupRequestsController.destroy')//.middleware('auth')
