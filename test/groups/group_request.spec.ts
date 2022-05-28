@@ -87,6 +87,7 @@ test.group('Group  Request', (group) => {
 
     const { body } = await supertest(BASE_URL) //Listando solicitações para mesas filtradas pelo mestre
       .get(`/groups/${group.id}/requests?master=${master.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200) //Retorna uma lista de usuários filtrando pelo master
 
     assert.exists(body.groupRequest, 'GroupRequest undefined')
@@ -112,6 +113,7 @@ test.group('Group  Request', (group) => {
 
     const { body } = await supertest(BASE_URL) //Listando solicitações para mesas filtradas pelo mestre
       .get(`/groups/${group.id}/requests?master=${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200) //Retorna uma lista de usuários filtrando pelo user.id
 
       assert.exists(body.groupRequest, 'GroupRequests undefined')
@@ -124,6 +126,7 @@ test.group('Group  Request', (group) => {
 
     const { body } = await supertest(BASE_URL) //Listando solicitações para mesas filtradas pelo mestre
       .get(`/groups/${group.id}/requests`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(422) //Retorna uma lista de usuários filtrando pelo user.id
 
       assert.exists(body.code, 'BAD_REQUEST')
@@ -141,6 +144,7 @@ test.group('Group  Request', (group) => {
 
     const response = await supertest(BASE_URL) //Aceitar solicitação de usuário para participar da mesa
     .post(`/groups/${group.id}/requests/${body.groupRequest.id}/accept`)
+    .set('Authorization', `Bearer ${token}`)
     .expect(200) //retorna um .ok()
 
     assert.exists(response.body.groupRequest, 'GroupRequest undefined')
@@ -169,6 +173,7 @@ test.group('Group  Request', (group) => {
 
     const response = await supertest(BASE_URL) //Aceitar solicitação de usuário para participar da mesa
       .post(`/groups/123/requests/${body.groupRequest.id}/accept`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(404) //retorna uma BadRequest()
 
       assert.equal(response.body.code, 'BAD_REQUEST')
@@ -187,6 +192,7 @@ test.group('Group  Request', (group) => {
 
     const response = await supertest(BASE_URL) //Aceitar solicitação de usuário para participar da mesa
       .post(`/groups/${group.id}/requests/123/accept`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(404) //retorna uma BadRequest()
 
       assert.equal(response.body.code, 'BAD_REQUEST')
@@ -204,15 +210,13 @@ test.group('Group  Request', (group) => {
 
     await supertest(BASE_URL) //Aceitar solicitação de usuário para participar da mesa
       .delete(`/groups/${group.id}/requests/${body.groupRequest.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200)
 
     const groupRequest = await GroupRequest.find(body.groupRequest.id) //Fazendo uma consulta no bd e verificando se encontra o id da requisição para fazer parte do grupo
 
     assert.isNull(groupRequest)
   })
-
-
-
 
   test('it should return 404 when providing an unexisting group for rejection', async (assert) => {
 
@@ -226,6 +230,7 @@ test.group('Group  Request', (group) => {
 
     const response = await supertest(BASE_URL) //Rejeitar solicitação de usuário para participar da mesa, passando um grupo inexistente
       .delete(`/groups/123/requests/${body.groupRequest.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(404) //retorna uma BadRequest()
 
       assert.equal(response.body.code, 'BAD_REQUEST')
@@ -245,6 +250,7 @@ test.group('Group  Request', (group) => {
 
     const response = await supertest(BASE_URL) //Rejeitar solicitação de usuário para participar da mesa, passando uma solicitação inexistente
       .delete(`/groups/${group.id}/requests/123`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(404) //retorna uma BadRequest()
 
       assert.equal(response.body.code, 'BAD_REQUEST')
