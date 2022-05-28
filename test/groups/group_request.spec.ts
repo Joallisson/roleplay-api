@@ -133,15 +133,25 @@ test.group('Group  Request', (group) => {
     const master = await UserFactory.create()
     const group = await GroupFactory.merge({ master: master.id }).create()
 
-    const { body } = await supertest(BASE_URL) //Fazendo uma solicitação para entrar em um grupo
+    const { body } = await supertest(BASE_URL) //Usuário Fazendo uma solicitação para entrar em um grupo
       .post(`/groups/${group.id}/requests`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`) //Passando o user global como sendo o usuário que quer participar de uma mesa //o token do usuário já possui todas as informações do usuário
       .send({})
 
-    await supertest(BASE_URL)
+    const response = await supertest(BASE_URL) //Aceitar solicitação de usuário para participar da mesa
     .post(`/groups/${group.id}/requests/${body.groupRequest.id}/accept`)
     .expect(200) //retorna um .ok()
+
+    assert.exists(response.body.groupRequest, 'GroupRequest undefined')
+    assert.equal(response.body.groupRequest.userId, user.id)
+    assert.equal(response.body.groupRequest.groupId, group.id)
+    assert.equal(response.body.groupRequest.status, 'ACCEPTED')
   })
+
+
+
+
+
 
   group.before(async () => { //esse hook roda antes de cada teste
 
