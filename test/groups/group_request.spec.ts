@@ -193,7 +193,7 @@ test.group('Group  Request', (group) => {
       assert.equal(response.body.status, 404)
   })
 
-  test.only('it should reject a group request', async (assert) => {
+  test('it should reject a group request', async (assert) => {
     const master = await UserFactory.create()
     const group = await GroupFactory.merge({ master: master.id }).create()
 
@@ -212,6 +212,45 @@ test.group('Group  Request', (group) => {
   })
 
 
+
+
+  test('it should return 404 when providing an unexisting group for rejection', async (assert) => {
+
+    const master = await UserFactory.create()
+    const group = await GroupFactory.merge({ master: master.id }).create()
+
+    const {body} = await supertest(BASE_URL) //Usuário Fazendo uma solicitação para entrar em um grupo //retorna a criação da groupRequest
+      .post(`/groups/${group.id}/requests`)
+      .set('Authorization', `Bearer ${token}`) //Passando o user global como sendo o usuário que quer participar de uma mesa //o token do usuário já possui todas as informações do usuário
+      .send({})
+
+    const response = await supertest(BASE_URL) //Rejeitar solicitação de usuário para participar da mesa, passando um grupo inexistente
+      .delete(`/groups/123/requests/${body.groupRequest.id}`)
+      .expect(404) //retorna uma BadRequest()
+
+      assert.equal(response.body.code, 'BAD_REQUEST')
+      assert.equal(response.body.status, 404)
+
+  })
+
+  test('it should return 404 when providing an unexisting group request for rejection', async (assert) => {
+
+    const master = await UserFactory.create()
+    const group = await GroupFactory.merge({ master: master.id }).create()
+
+    await supertest(BASE_URL) //Usuário Fazendo uma solicitação para entrar em um grupo
+      .post(`/groups/${group.id}/requests`)
+      .set('Authorization', `Bearer ${token}`) //Passando o user global como sendo o usuário que quer participar de uma mesa //o token do usuário já possui todas as informações do usuário
+      .send({})
+
+    const response = await supertest(BASE_URL) //Rejeitar solicitação de usuário para participar da mesa, passando uma solicitação inexistente
+      .delete(`/groups/${group.id}/requests/123`)
+      .expect(404) //retorna uma BadRequest()
+
+      assert.equal(response.body.code, 'BAD_REQUEST')
+      assert.equal(response.body.status, 404)
+
+  })
 
 
 
