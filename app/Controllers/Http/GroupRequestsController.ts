@@ -67,6 +67,9 @@ export default class GroupRequestsController {
 
     const updateGroupRequest = await groupRequest.merge({ status: 'ACCEPTED' }) //Atualiza o status da solicitação para ACCEPTED
 
+    await groupRequest.load('group')
+    await groupRequest.group.related('players').attach([groupRequest.userId]) //o userId vai fazer parte dos players do grupo groupRequest
+
     return response.ok({ groupRequest: updateGroupRequest })
   }
 

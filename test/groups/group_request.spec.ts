@@ -146,6 +146,14 @@ test.group('Group  Request', (group) => {
     assert.equal(response.body.groupRequest.userId, user.id)
     assert.equal(response.body.groupRequest.groupId, group.id)
     assert.equal(response.body.groupRequest.status, 'ACCEPTED')
+
+    await group.load('players') //carregando o relacionamento players depois que o usuário fez a solicitação para participar da mesa
+
+    assert.isNotEmpty(group.players)
+    assert.equal(Object.values(group.players).length, 1) //É pra ter só o usuário que fez a solicitação para participar da mesa, pois o mestre só é adicionado no relacionamento 'players' quando eu acesso a rota para criar um grupo
+    assert.equal(group.players[0].id, user.id)
+
+
   })
 
 
